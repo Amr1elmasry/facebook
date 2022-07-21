@@ -1,0 +1,59 @@
+﻿@model IEnumerable<FB.Models.User>
+
+@{
+    ViewBag.Title = "Request";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<table class="table" id="ReqUU">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.first_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.last_name)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.first_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.last_name)
+        </td>
+        <td>
+            <!--@Html.DisplayFor(modelItem => item.profile_picture)-->
+            @if (item.profile_picture != null)
+            {
+                <img src="~/uploads/profile_pictures/@item.profile_picture" alt="error" width="50" height="50" />
+            }
+            else
+            {
+                <img src="~/uploads/profile_pictures/default.jpg" alt="error" width="50" height="50" />
+            }
+        </td>
+        <td>
+            
+            @using (Html.BeginForm("Accept", "Home", FormMethod.Post))
+            {
+                <input type="hidden" name="UserId" value="@int.Parse(User.Identity.Name)" />
+                <input type="hidden" name="FrindId" value="@item.id" />
+                <input type="submit" value="Accept" class="btn btn-primary" style="background-color:cadetblue" />
+            }
+            @using (Html.BeginForm("Delete", "Home", FormMethod.Post))
+            {
+                <input type="hidden" name="UserId" value="@int.Parse(User.Identity.Name)" />
+                <input type="hidden" name="FrindId" value="@item.id" />
+                <input type="submit" value="Reject" class="btn btn-danger" />
+            }
+
+            @*@Html.ActionLink("Accept", "Details", new { id = item.User.id }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.User.id })*@
+        </td>
+    </tr>
+    }
+
+
+</table>

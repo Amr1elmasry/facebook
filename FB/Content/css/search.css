@@ -1,0 +1,126 @@
+/* Start Global Rules */
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: "Open Sans", sans-serif;
+}
+ul {
+    list-style: none;
+}
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+  /* Small */
+  @media (min-width: 768px) {
+    .container {
+      width: 750px;
+    }
+  }
+  /* Medium */
+  @media (min-width: 992px) {
+    .container {
+      width: 970px;
+    }
+  }
+  /* Large */
+  @media (min-width: 1200px) {
+    .container {
+      width: 1170px;
+    }
+  }
+  /* End Global Rules */
+
+/* Staaaart OOOOOFFFF HHHHEEEEEAAAADDDDEEEERRR */
+
+body header {
+    position: relative;
+    left: 0;
+    width: 100%;
+    background-color: #356ba7;
+}
+
+header nav {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+header nav ul {
+    display: flex;
+}
+
+header nav ul li a {
+    padding: 40px 10px;
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+    position: relative;
+}
+
+header nav ul li a.active,
+header nav ul li a:hover {
+    color: var(--main-color);
+    border-bottom: 1px solid var(--main-color);  
+}
+/* ENNNDDDDD OOOOOFFFF HHHHEEEEEAAAADDDDEEEERRR */
+
+body .search-info{
+    width: 80%;
+    margin-left: 150px ;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    float: left;
+    box-shadow: 0px 2px 5px -1px rgb(138 138 138);
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+body .search-info div{
+    margin: 15px;
+    text-align: left;
+    align-content: center   ;
+}
+
+/*    friend requestes*/
+
+body .friend-reqests{
+    width: 80%;
+    margin-left: 150px ;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    float: left;
+    box-shadow: 0px 2px 5px -1px rgb(138 138 138);
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.people-nearby .nearby-user{
+  margin: 20px 10px;
+  border-top: 1px solid #f1f2f2;
+  border-bottom: 1px solid #f1f2f2;
+  margin-bottom: 20px;
+}
+
+.people-nearby .nearby-user button{
+  margin-bottom: 5px;
+}
+
+img.profile-photo-lg{
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+}

@@ -6,9 +6,11 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/Site.css"  rel="stylesheet"/>
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top navbar-light bg-light">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -16,25 +18,44 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Facebook", "MyProfile", "User", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("MyFriends", "FriendesList", "User")</li>
-                    <li>@Html.ActionLink("MyProfile", "MyProfile", "User")</li>
-                </ul>
-            </div>
+            @if (Request.IsAuthenticated)
+            {
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Profile", "MyProfile", "User")</li>
+                        <li>@Html.ActionLink("Edit Profile", "EditProfile", "User")</li>
+                        <li>@Html.ActionLink("Friend Requests", "Requests", "Home")</li>
+                        <li>@Html.ActionLink("Friends", "FriendesList", "User")</li>
+                        <li>@Html.ActionLink("Create Post", "CreatePost", "User")</li>
+                        <li>
+                            @using (Html.BeginForm("Search", "Home", FormMethod.Post))
+                            {
+                                <div class="input-group" style="margin-top:8px">
+                                    <div class="form-outline" style="display:inline; ">
+                                        <input class="text" name="SearchName" id="SearchName"
+                                               placeholder="Email or Phone Number..." type="text" />
+                                    </div>
+                                    <input type="submit" class="btn btn-primary" onclick="Search()">
+                                    <i class="fas fa-search"></i>
+
+                                </div>
+                            }
+                        </li>
+
+                        @using (Html.BeginForm("Logout", "Home", FormMethod.Post, new { @class = "btn btn-dark", id = "logoutForm" }))
+                        {
+                            <input type="submit" value="logout" class="btn btn-default" style="margin-top:2px" />
+                        }
+                    </ul>
+                </div>
+            }
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
@@ -42,3 +63,19 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+<script>
+    function Search() {
+
+        var SSS = $("#search").val();
+        $.ajax({
+            url: '@Url.Action("Search", "Home")',
+            data: {
+                Search: SSS
+            },
+            type: 'get',
+            success: function (data) { },
+
+        });
+    }
+</script>

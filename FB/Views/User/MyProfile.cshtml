@@ -1,49 +1,195 @@
-﻿@model IEnumerable<FB.Models.Post>
+﻿@model FB.ViewModels.ProfileViewModel
 
 @{
-    ViewBag.Title = "MyProfile";
+    ViewBag.Title = Model.user.first_name;
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
-<h2>MyProfile</h2>
-@if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("Logout", "Home", FormMethod.Post, new { id = "logoutForm" }))
+<link rel="stylesheet" href="~/Content/css/homepage-style.css" />
+
+<div style="padding-top:15px; text-align: center;">
+    @if (Model.user.profile_picture != null)
     {
-        <input type="submit" value="logout" class="btn btn-default" />
+        <img src="~/uploads/profile_pictures/@Model.user.profile_picture" alt="error" style="
+                            display: block; border-radius: 50%;  margin-left:auto; margin-right:auto; width:250px; height:250px;
+                            " />
     }
-}
-
-<p>
-    @Html.ActionLink("Create Post", "Create")
-</p>
-<table class="table">
-
-    @foreach (var item in Model)
+    else
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.comments_count)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.likes_count)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.dislikes_count)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id })
-            </td>
-        </tr>
+        <img src="~/uploads/profile_pictures/default.jpg" alt="error" style="
+                            display: block; border-radius: 50%;  margin-left:auto; margin-right:auto; width:250px;
+                            " />
+    }
+    <h1>@Model.user.first_name @Model.user.last_name</h1>
+</div>
+
+
+<div class="home-posts" style="padding-top:50px">
+
+    @foreach (var item in Model.user.Posts)
+    {
+        <div class="widget-box post" style="padding:15px">
+            <div class="head">
+                <div class="user-img">
+                    @if (Model.user.profile_picture != null)
+                    {
+                        <img src="~/uploads/profile_pictures/@Model.user.profile_picture" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                    }
+                    else
+                    {
+                        <img src="~/uploads/profile_pictures/default.jpg" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                    }
+                </div>
+                <div class="post-info">
+                    <span class="user-info" style="display: block; font-size: 14px; margin-top: 4px;">
+                        <b>@Model.user.first_name @Model.user.last_name</b>
+                    </span>
+                    <span class="post-date" style="font-size: 12px;">@item.time</span>
+                </div>
+            </div>
+            <div class="body post-body">
+                <br><br>
+                <div class="post-talking">
+                    <h3>
+                        @item.content
+                    </h3>
+                </div>
+                <div class="top-icons">
+                    @if (@item.Reacts.SingleOrDefault(r => r.reacter_id == int.Parse(User.Identity.Name)) == null)
+                    {
+
+                        using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                        {
+                            <input type="hidden" name="id" value="@item.id" />
+                            <input type="hidden" name="react" value="true" />
+                            <input type="submit" value="Like" class="btn btn-default " />
+                            @item.likes_count
+                        }
+
+                        using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                        {
+                            <input type="hidden" name="id" value="@item.id" />
+                            <input type="hidden" name="react" value="false" />
+                            <input type="submit" value="DisLike" class="btn btn-default " />
+                            @item.dislikes_count
+                        }
+
+
+                    }
+                    else
+                    {
+                        if (@item.Reacts.SingleOrDefault(r => r.reacter_id == int.Parse(User.Identity.Name)).is_like == FB.Models.ReactType.Like)
+                        {
+                            using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@item.id" />
+                                <input type="hidden" name="react" value="true" />
+                                <input type="submit" value="Liked" class="btn btn-primary" />
+                                @item.likes_count
+
+                            }
+
+                            using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@item.id" />
+                                <input type="hidden" name="react" value="false" />
+                                <input type="submit" value="DisLike" class="btn btn-default" />@item.dislikes_count
+                            }
+
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@item.id" />
+                                <input type="hidden" name="react" value="true" />
+                                <input type="submit" value="Like" class="btn btn-default" />@item.likes_count
+                            }
+
+                            using (Html.BeginForm("AddReact", "User", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@item.id" />
+                                <input type="hidden" name="react" value="false" />
+                                <input type="submit" value="DisLiked" class="btn btn-danger" />@item.dislikes_count
+                            }
+
+                        }
+
+                    }
+                </div>
+                <div class="col-12">
+                    @foreach (var comment in item.comments)
+                    {
+                        var commenter = @Model.friends.SingleOrDefault(f => f.id == comment.commenter_id);
+
+                        <div class="user-img">
+                            @if (commenter.profile_picture != null)
+                            {
+                                <img src="~/uploads/profile_pictures/@commenter.profile_picture" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                            }
+                            else
+                            {
+                                <img src="~/uploads/profile_pictures/default.jpg" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                            }
+                        </div>
+                        <div class="user-comment">
+                            <div class="user-info" style="font-weight:bold"> 
+                                @Html.ActionLink(@commenter.first_name +" "+ @commenter.last_name, "ShowFriend", "User",new { id= commenter.id },null)
+                            </div>
+                            <p> @comment.comment_text </p>
+                        </div>
+
+                    }
+                </div>
+
+                <div class="my-comment">
+                    <div class="user-img">
+                        @if (Model.user.profile_picture != null)
+                        {
+                            <img src="~/uploads/profile_pictures/@Model.user.profile_picture" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                        }
+                        else
+                        {
+                            <img src="~/uploads/profile_pictures/default.jpg" alt="error" style="
+                            display: inline-block; background: no-repeat center center; background-size: cover;
+                            height: 40px; width: 40px; border-radius: 50%; float: left; margin-right: 15px;
+                            " />
+                        }
+                    </div>
+                    <div class="form-info">
+
+                        <span>
+
+                            @using (Html.BeginForm("AddComment", "User", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@item.id" />
+                                <input type="text" id="commenttxt" name="text" />
+                                <input type="submit" value="Comment" class="btn btn-default" />
+                            }
+
+                        </span>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     }
 
-</table>
+</div>

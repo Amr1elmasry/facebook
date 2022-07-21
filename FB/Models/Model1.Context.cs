@@ -30,9 +30,6 @@ namespace FB.Models
         public virtual DbSet<Friend> Friends { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<React> Reacts { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-       
     }
 }

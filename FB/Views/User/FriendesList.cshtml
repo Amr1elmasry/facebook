@@ -6,9 +6,6 @@
 
 <h2>FriendesList</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
 
 
@@ -17,15 +14,18 @@
     
  <tr>
      <td>
-         @Html.ActionLink(item.first_name, "ShowFriend", new { id = item.id }) |
-         @Html.ActionLink("Details", "Details", new { id = item.id }) |
-         @Html.ActionLink("Delete", "Delete", new { id = item.id })
+         @if (item.profile_picture != null)
+         {
+             <img src="~/uploads/profile_pictures/@item.profile_picture" alt="error" width="50" height="50" />
+         }
+         else
+         {
+             <img src="~/uploads/profile_pictures/default.jpg" alt="error" width="50" height="50" />
+         }
+         @Html.ActionLink(item.first_name + " " + item.last_name, "ShowFriend", new { id = item.id }) 
+
      </td>
-     <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-        @Html.ActionLink("Details", "Details", new { id = item.id }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.id })
-     </td>
+
  </tr>
 }
 

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<FB.Models.User>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-info" id="Serar">
+    <h1 class="panel-heading">Search Result</h1>
+    <div class="row panel-body">
+        @if (Model != null)
+        {
+           
+        
+        foreach (var subitem in Model)
+        {
+            var userId = int.Parse(User.Identity.Name);
+            var FriId = subitem.id;
+
+        <div class="col-md-3 thumbnail" style="margin-left:20px;margin-bottom:30px; height:150px;">
+            @*<img src="~/Uploads/@subitem.ArticleImage" style="width:380px;height:280px" />*@
+            <div class="user-image ">
+                @if (subitem.profile_picture != null)
+                {
+                    <img src="~/uploads/profile_pictures/@subitem.profile_picture" alt="error" width="100" , height="100" />
+                }
+                else
+                {
+                    <img src="~/uploads/profile_pictures/default.jpg" alt="error" width="100" , height="100" />
+                }
+            </div>
+
+
+
+            @Html.ActionLink(subitem.first_name, "ShowFriend", "User", new { id = @subitem.id }, null)
+
+
+
+
+
+
+            @if (subitem.Friends1.SingleOrDefault(f => f.user1_id == userId && f.user2_id == FriId || f.user1_id == FriId && f.user2_id == userId) == null && subitem.Friends.SingleOrDefault(f => f.user1_id == userId && f.user2_id == FriId || f.user1_id == FriId && f.user2_id == userId) == null)
+            {
+                if (subitem.friend_requests.SingleOrDefault(f => f.sender_id == userId) != null)
+                {
+                    @Html.DisplayName("add sent")
+                }
+                else if (subitem.friend_requests1.SingleOrDefault(f => f.sender_id == subitem.id && f.reciver_id == userId) != null)
+                {
+                    using (Html.BeginForm("Accept", "Home", FormMethod.Post))
+                    {
+                        <input type="hidden" name="UserId" value="@int.Parse(User.Identity.Name)" />
+                        <input type="hidden" name="FrindId" value="@subitem.id" />
+                        <input type="submit" value="Accept" class="btn btn-primary" style="background-color:cadetblue" />
+                    }
+                    using (Html.BeginForm("Delete", "Home", FormMethod.Post))
+                    {
+                        <input type="hidden" name="UserId" value="@int.Parse(User.Identity.Name)" />
+                        <input type="hidden" name="FrindId" value="@subitem.id" />
+                        <input type="submit" value="Reject" class="btn btn-danger" />
+                    }
+                }
+                else
+                {
+
+                    using (Html.BeginForm("SendReq", "Home", FormMethod.Post))
+                    {
+                        <input type="hidden" name="friId" value="@FriId" />
+                        <input type="hidden" name="USerId" value="@userId" />
+                        <input type="submit"  value="Add Friend" class="btn btn-primary" />
+                    }
+                }
+
+            }
+           
+        </div>
+        }
+        }
+    </div>
+</div>
+        

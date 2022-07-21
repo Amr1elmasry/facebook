@@ -1,14 +1,10 @@
 ﻿@model IEnumerable<FB.Models.Post>
 
 @{
-                /**/
-
-                ViewBag.Title = "MyProfile";
-                Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "MyProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
-
-@ViewBag.first_name
 
 <h2>MyProfile</h2>
 @if (Request.IsAuthenticated)

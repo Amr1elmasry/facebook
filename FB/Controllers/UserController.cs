@@ -1,4 +1,5 @@
 ﻿using FB.Models;
+using FB.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -126,9 +127,13 @@ namespace FB.Controllers
         public ActionResult MyProfile()
         {
             int idcurr = int.Parse(System.Web.HttpContext.Current.User.Identity.Name);
-            List<Post> postlist = db.Posts.Where(p => p.poster_id == idcurr).ToList();
-            
-            return View(postlist);
+            User user = db.Users.SingleOrDefault(u => u.id == idcurr);
+            List<Friend> friendeslist = db.Friends.Where(f => f.user1_id == idcurr || f.user2_id == idcurr).ToList();
+            List<User> userslist = db.Users.ToList();
+            List<User> userslist2 = userslist.Where(u => friendeslist.Any(f => f.user1_id == u.id || f.user2_id == u.id)).ToList();
+            ProfileViewModel profileviewmodel = new ProfileViewModel { user = user, friends = userslist2 };
+
+            return View(profileviewmodel);
 
         }
         [Authorize]
@@ -139,13 +144,52 @@ namespace FB.Controllers
             int idcurr = int.Parse(System.Web.HttpContext.Current.User.Identity.Name);
             if (id != null)
             {
+                if (id == idcurr)
+                    {
+                    return RedirectToAction("MyProfile");
+                }
                 Friend friend = db.Friends.SingleOrDefault(f => (f.user1_id == id && f.user2_id == idcurr )|| (f.user1_id == idcurr && f.user2_id == id));
                 if (friend == null)
-                    return HttpNotFound();
+                {
+                    return RedirectToAction("ShowUser", new { id = id });
+                }
                 List<Post> postlist = db.Posts.Where(p => p.poster_id == id).ToList();
                 User user = db.Users.SingleOrDefault(u => u.id == id);
-                ViewBag.user = db.Users.Where(u => u.id == id).First();
-                return View(user);
+                //ViewBag.user = db.Users.Where(u => u.id == id).First();
+                List<Friend> friendeslist = db.Friends.Where(f => f.user1_id == idcurr || f.user2_id == idcurr).ToList();
+                List<User> userslist = db.Users.ToList();
+                //List<User> userslist = db.Users.Where(p => friendeslist.All(p2 => p2.user1_id == p.id || p2.user2_id == p.id && p.id != id)).ToList();
+                List<User> userslist2 = userslist.Where(u => friendeslist.Any(f => f.user1_id == u.id || f.user2_id == u.id)).ToList();
+                ProfileViewModel profileviewmodel = new ProfileViewModel { user = user, friends = userslist2 };
+                return View(profileviewmodel);
+            }
+            else
+                return RedirectToAction("FriendesList");
+
+        }
+        [Authorize]
+        [HttpGet]
+
+        public ActionResult ShowUser(int? id)
+        {
+            int idcurr = int.Parse(System.Web.HttpContext.Current.User.Identity.Name);
+            if (id != null)
+            {
+                if (id == idcurr)
+                {
+                    return RedirectToAction("MyProfile");
+                }
+                Friend friend = db.Friends.SingleOrDefault(f => (f.user1_id == id && f.user2_id == idcurr) || (f.user1_id == idcurr && f.user2_id == id));
+                
+                List<Post> postlist = db.Posts.Where(p => p.poster_id == id).ToList();
+                User user = db.Users.SingleOrDefault(u => u.id == id);
+                if (friend == null)
+                    return View(user);
+                //ViewBag.user = db.Users.Where(u => u.id == id).First();
+                else
+                {
+                    return RedirectToAction("ShowFriend", new { id = id });
+                }
             }
             else
                 return RedirectToAction("FriendesList");
